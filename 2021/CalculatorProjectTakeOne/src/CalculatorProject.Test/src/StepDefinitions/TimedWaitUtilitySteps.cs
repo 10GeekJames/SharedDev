@@ -1,7 +1,7 @@
 using System.Threading;
 using TechTalk.SpecFlow;
 
-namespace UITests.StepDefinitions
+namespace CalculatorProject.Test.StepDefinitions
 {
     [Binding]
     public class TimedWaitUtilitySteps : Steps

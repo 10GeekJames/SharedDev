@@ -5,6 +5,7 @@ using CalculatorProject.Test.Pages;
 using TechTalk.SpecFlow;
 using CalculatorProject.Test.Factories.WebDrivers;
 using CalculatorProject.Test.Factories.Environments;
+using CalculatorProject.Test.Wrappers;
 
 namespace CalculatorProject.Test.Hooks
 {
@@ -30,7 +31,7 @@ namespace CalculatorProject.Test.Hooks
             _webDriverFactory = (IWebDriverFactory)new WebDriverFactory();
             _environmentUrlFactory = (IEnvironmentUrlFactory)new EnvironmentUrlFactory();
             
-
+            this._objectContainer.RegisterInstanceAs<CalculatorAppWrapper>(new CalculatorAppWrapper());
             this._objectContainer.RegisterInstanceAs<IWebDriverFactory>(this._webDriverFactory);
             this._objectContainer.RegisterInstanceAs<IEnvironmentUrlFactory>(this._environmentUrlFactory);            
         }

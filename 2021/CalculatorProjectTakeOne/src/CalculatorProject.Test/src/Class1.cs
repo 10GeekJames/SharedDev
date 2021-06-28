@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CalculatorPProject.Test
+namespace CalculatorProject.Test
 {
     public class Class1
     {

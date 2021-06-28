@@ -8,13 +8,13 @@
             "terminals": [
                 {
                     "name": "-test builder etc",
-                    "path": ".\\2021\\CalculatorProjectTakeOne\\src\\CalculatorProject.Test\\src",
+                    "path": ".\\2021\\CalculatorProject\\ChapterOne\\src\\CalculatorProject.Test\\src",
                     "cmd": "dotnet watch build",
                     "num": 0
                 },
                 {
                     "name": "-app",
-                    "path": ".\\2021\\CalculatorProjectTakeOne\\src\\CalculatorProject\\src",
+                    "path": ".\\2021\\CalculatorProject\\ChapterOne\\src\\CalculatorProject\\src",
                     "cmd": "dotnet watch build",
                     "num": 0
                 }

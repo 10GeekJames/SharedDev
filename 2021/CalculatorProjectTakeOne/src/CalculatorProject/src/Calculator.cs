@@ -11,6 +11,11 @@ namespace CalculatorProject
         {
             return FirstNumber + SecondNumber;
         }
+
+        public int Sub()
+        {
+            return FirstNumber - SecondNumber;
+        }
         
     }
 }

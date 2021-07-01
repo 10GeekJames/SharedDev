@@ -5,7 +5,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/CalculatorProject/src/CalculatorProject.csproj" />
+    <ProjectReference Include="../CalculatorProject/CalculatorProject.csproj" />
   </ItemGroup>
 
 </Project>

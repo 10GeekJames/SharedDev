@@ -16,6 +16,10 @@ namespace CalculatorProject
         {
             return FirstNumber - SecondNumber;
         }
+
+        public string ShowMeBob() {
+            return "Bob";
+        }
         
     }
 }

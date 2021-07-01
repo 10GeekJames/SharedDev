@@ -19,9 +19,15 @@ namespace Calculator.ConsoleApp
             calc.SecondNumber = num2;
             var answer = calc.Add();
             var answer2 = calc.Sub();
+            var bobMsg = calc.ShowMeBob();
 
             Console.WriteLine($"{num1} + {num2} {answer}");
             Console.WriteLine($"{num1} - {num2} {answer2}");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Here is Bobs msg {bobMsg}");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            
         }
     }
 }

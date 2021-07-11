@@ -27,7 +27,7 @@
     string columnId = "Id";
     string columnName = "LookupText";
     string columnDescription = "DisplayText";
-    string connectionString = System.Environment.GetEnvironmentVariable("Calculator2ConnectionStringsPrimary");
+    string connectionString = System.Environment.GetEnvironmentVariable("CalculatorConnectionStringsPrimary");
       
     var fileName = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\EnumsGenerated\\")), tableName + ".cs");
     using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))

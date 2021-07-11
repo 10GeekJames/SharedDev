@@ -11,7 +11,7 @@ namespace Calculator.Infrastructure
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(System.Environment.GetEnvironmentVariable("Calculator2ConnectionStringsPrimary"), b => b.MigrationsAssembly("Calculator.Api")); }
+            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(System.Environment.GetEnvironmentVariable("CalculatorConnectionStringsPrimary"), b => b.MigrationsAssembly("Calculator.Api")); }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

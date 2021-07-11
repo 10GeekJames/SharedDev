@@ -8,7 +8,7 @@ namespace Calculator.Infrastructure
         public CalculatorDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CalculatorDbContext>();
-            optionsBuilder.UseSqlServer(System.Environment.GetEnvironmentVariable("Calculator2ConnectionStringsPrimary"), b => b.MigrationsAssembly("Calculator.Api"));
+            optionsBuilder.UseSqlServer(System.Environment.GetEnvironmentVariable("CalculatorConnectionStringsPrimary"), b => b.MigrationsAssembly("Calculator.Api"));
             return new CalculatorDbContext(optionsBuilder.Options);
         }
 

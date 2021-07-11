@@ -46,7 +46,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Route("DoAction")]
-        public IActionResult Get(CalculatorDoActionBehaviorRequest request)
+        public IActionResult DoAction(CalculatorDoActionBehaviorRequest request)
         {
             var result = "";
             var didError = false;

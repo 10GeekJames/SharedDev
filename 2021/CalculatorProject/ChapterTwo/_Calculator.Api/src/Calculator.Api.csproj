@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.3" NoWarn="NU1605" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.3" NoWarn="NU1605" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="./../../_Calculator.Models/src/Calculator.Models.csproj" />
+    <ProjectReference Include="./../../_Calculator.Infrastructure/src/Calculator.Infrastructure.csproj" />
+    <ProjectReference Include="./../../_Calculator.Service/interfaces/Calculator.Service.Interfaces.csproj" />    
+    <ProjectReference Include="./../../_Calculator.Service/src/Calculator.Service.csproj" />
+    <ProjectReference Include="./../../_Calculator.Service/providers/StandardProvider/src/Calculator.Service.StandardProvider.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
+    <PackageReference Include="IdentityModel" Version="5.1.0" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
+    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="Toolbelt.EntityFrameworkCore.IndexAttribute" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.5" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.5" />
+    <PackageReference Include="Kendo.DynamicLinqCore" Version="3.1.1" />    
+    <PackageReference Include="Telerik.UI.for.AspNet.Core" Version="2016.3.914" />
+
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="*" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="*" /> 
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="*" />    
+    
+  </ItemGroup>
+
+</Project>

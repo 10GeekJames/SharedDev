@@ -1,0 +1,151 @@
+﻿@using Microsoft.JSInterop;
+@using System.Reflection
+@using Microsoft.AspNetCore.Authorization
+
+@inject LazyAssemblyLoader AssemblyLoader
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject IAuthorizationService AuthorizationService
+@inject ActiveBusinessDataHttpClient ActiveBusinessDataHttpClient
+@inject ActiveUserDataHttpClient ActiveUserDataHttpClient
+@inject CalculatorStateService CalculatorStateService
+@inject IJSRuntime JSRuntime
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="@LoadedAssemblies"
+        OnNavigateAsync="@OnNavigateAsync" PreferExactMatches="@true">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (!context.User.Identity.IsAuthenticated)
+                    {
+                        <RedirectToLogin />
+                    }
+                    else
+                    {
+                        <p>You are not authorized to access this resource.</p>
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+        <Navigating>
+            <p>Loading the page...</p>
+        </Navigating>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    public bool hasRunUserInit = false;
+    public bool hasRunAppInit = false;
+    private List<Assembly> LoadedAssemblies = new List<Assembly>()
+    {
+        @* typeof(IndividualModule.IndividualComponent).Assembly, typeof(WebsiteModule.WebsiteComponent).Assembly *@
+    };
+
+     private async Task GetUserData()
+    {
+        var data = await this.ActiveUserDataHttpClient.GetAsync();
+        if(data != null)
+        {        
+            CalculatorStateService.ActiveUserData = data;
+            var js = (IJSInProcessRuntime)JSRuntime;
+            js.InvokeVoid("activeUserData.set", data);
+        }
+    }
+    private void ClearUserData()
+    {
+        var js = (IJSInProcessRuntime)JSRuntime;
+        js.InvokeVoid("activeUserData.set", null);
+    }
+    private async Task GetAppData()
+    {
+        var data = await this.ActiveBusinessDataHttpClient.GetAsync();
+        if(data != null)
+        {        
+            CalculatorStateService.ActiveBusinessData = data;
+            var js = (IJSInProcessRuntime)JSRuntime;
+            js.InvokeVoid("activeBusinessData.set", data);
+        }
+    }
+    private async Task OnNavigateAsync(NavigationContext navContext)
+    {
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        
+        // probably a better home for this, but lets grab some initial data from the database and have it handy
+        if(!hasRunAppInit)
+        {
+            hasRunAppInit = true;
+            await GetAppData();
+        }
+        if(!hasRunUserInit)
+        {
+            if(user.Identity.IsAuthenticated)
+            {
+                hasRunUserInit = true;
+                await GetUserData();
+            } 
+            else 
+            {
+                hasRunUserInit = false;
+                ClearUserData();
+            }
+        }
+        
+        // Url of the page that needs the lazy loaded assembly
+        if (navContext.Path.ToLower().Contains("user/individual"))
+        {
+            if (!user.Identity.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("authentication/login");
+            }
+            else
+            {
+                @* var assemblies = await AssemblyLoader.LoadAssembliesAsync(new List<string> { "IndividualUserModule.dll" }); LoadedAssemblies.AddRange(assemblies);  *@
+            }
+        }
+
+        if (navContext.Path.ToLower().Contains("admin/website"))
+        {
+            if (!user.Identity.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("authentication/login");
+            }
+            else
+            {
+                if (user.IsInRole("Admin"))
+                {
+                    var assemblies = await AssemblyLoader.LoadAssembliesAsync(new List<string> { "WebsiteAdminModule.dll" });
+                    LoadedAssemblies.AddRange(assemblies);
+                } else {
+                    NavigationManager.NavigateTo("/ElevatedAccountRequired");
+                }
+            }
+        }
+
+        if (navContext.Path.ToLower().Contains("licensed/room"))
+        {
+            if (!user.Identity.IsAuthenticated)
+            {
+                NavigationManager.NavigateTo("authentication/login");
+            }
+            else
+            {
+                if ((await AuthorizationService.AuthorizeAsync(user, "Participant"))
+                    .Succeeded)
+                {
+                    var assemblies = await AssemblyLoader.LoadAssembliesAsync(new List<string> { "RoomModule.dll" });
+                    LoadedAssemblies.AddRange(assemblies);
+                } 
+                else {
+                    NavigationManager.NavigateTo("/LicensedAccountRequired");
+                }
+            }
+        }
+    }
+}

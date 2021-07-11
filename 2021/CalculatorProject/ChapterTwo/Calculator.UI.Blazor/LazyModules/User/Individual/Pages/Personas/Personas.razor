@@ -1,0 +1,14 @@
+@namespace IndividualUserModule.Pages
+
+@page "/User/Individual/Personas/{name?}"
+
+<IndividualEdit />
+<PersonasList />
+@if(@Name != null) {
+<PersonaEdit Name="@Name" />
+}
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+}

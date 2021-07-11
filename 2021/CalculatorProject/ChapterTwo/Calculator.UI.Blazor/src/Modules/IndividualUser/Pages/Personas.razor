@@ -1,0 +1,14 @@
+@namespace Calculator.UI.Blazor.Modules.IndividualUser.Pages
+@layout IndividualUserMainLayout
+@page "/User/Individual/Personas/{name?}"
+<a href="#">hot-pink?</a>
+<IndividualEdit />
+<PersonasList />
+@if(@Name != null) {
+<PersonaEdit Name="@Name" />
+}
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+}

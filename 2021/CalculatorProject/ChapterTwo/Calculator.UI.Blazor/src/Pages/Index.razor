@@ -1,0 +1,26 @@
+﻿@page "/"
+@using Newtonsoft.Json;
+@inject IJSRuntime JSRuntime
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Index> Localize
+
+<h1>@Localize["Greeting"]</h1>
+<AuthorizeView>
+    <Authorized>
+        @Localize["Hello"] @context.User.Identity.Name
+        <p>@Localize["LoggedInGratitude"]</p>
+        <p>@Localize["LoggedInInvitation"]</p>        
+    </Authorized>
+    <NotAuthorized>
+        <p>@Localize["Login"]</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+<NavLink class="nav-link" href="/User/Individual">
+    <span class="oi oi-list-rich" aria-hidden="true"></span> @Localize["TestUserIndividualComponent"]
+</NavLink>
+<NavLink class="nav-link" href="/Admin/Website">
+    <span class="oi oi-list-rich" aria-hidden="true"></span> @Localize["TestWebsiteAdminComponent"]
+</NavLink>
+<NavLink class="nav-link" href="/Licensed/Room">
+    <span class="oi oi-list-rich" aria-hidden="true"></span> @Localize["TestLicensedRoomComponent"]
+</NavLink>

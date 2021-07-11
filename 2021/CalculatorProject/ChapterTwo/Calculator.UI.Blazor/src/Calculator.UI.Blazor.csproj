@@ -1,0 +1,92 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Blazored.FluentValidation" Version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="5.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />     
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0" />
+    <PackageReference Include="Telerik.UI.for.Blazor.Trial" Version="2.24.0" />    
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.7" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include = "./../../_Calculator.Models/src/Calculator.Models.csproj" />    
+    
+    <!-- <ProjectReference Include="../LazyServices/LazyServices.csproj" />     -->
+  </ItemGroup>
+
+
+<!--
+  <ItemGroup>  
+    <ProjectReference Include="..\LazyModules\User\Individual\IndividualUserModule.csproj" />
+    <BlazorWebAssemblyLazyLoad Include="IndividualUserModule.dll" />
+  </ItemGroup>
+  
+   <ItemGroup>
+    <ProjectReference Include="..\LazyModules\Admin\Website\WebsiteAdminModule.csproj" />
+    <BlazorWebAssemblyLazyLoad Include="WebsiteAdminModule.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LazyModules\Licensed\Room\RoomModule.csproj" />
+    <BlazorWebAssemblyLazyLoad Include="RoomModule.dll" />
+  </ItemGroup> -->
+
+  <ItemGroup>
+    <Watch Include="./**/*.scss" />
+    <Watch Remove="./**/*.css" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <!-- <Watch Include="..\LazyModules\**\bin\debug\net5.0\**\*" /> -->
+  </ItemGroup>
+
+  <!-- <ItemGroup>
+    <Reference Include="IndividualUserModule">
+      <HintPath>..\LazyModules\User\Individual\obj\Debug\net5.0\IndividualUserModule.dll</HintPath>
+    </Reference>
+    <BlazorWebAssemblyLazyLoad Include="IndividualUserModule.dll" />
+
+    <Reference Include="LazyServices">
+      <HintPath>..\LazyServices\bin\Debug\net5.0\LazyServices.dll</HintPath>
+    </Reference>
+    <BlazorWebAssemblyLazyLoad Include="LazyServices.dll" />
+  </ItemGroup> -->
+  
+  <!-- <Target Name="exportStyles" AfterTargets="AfterBuild">
+    <Copy SourceFiles="..\LazyModules\User\Individual\bin\Debug\net5.0\publish\wwwroot\individual-user-module.css" DestinationFolder="$(OutDir)\wwwroot" />
+  </Target> -->
+  <Target Name="exportStyles2" AfterTargets="AfterBuild">
+    <!-- <Copy SourceFiles="..\LazyModules\User\Individual\bin\Debug\net5.0\publish\wwwroot\IndividualUserModule.styles.css" DestinationFolder="$(OutDir)\wwwroot" /> -->
+  </Target>
+
+    <Target Name="SassCheck" BeforeTargets="PreBuild">
+    <Exec Command="sass --version" ContinueOnError="true">
+    <Output TaskParameter="ExitCode" PropertyName="ErrorCodeSass" />
+    </Exec>
+    <Error Condition="'$(ErrorCodeSass)' != '0'" Text="Dart-sass is required for this project. Install globally with 'npm i -g sass' " />
+  </Target>
+
+  <Target Name="SassBuild" BeforeTargets="Build">
+    <Exec Command="sass Styles:wwwroot/ --embed-source-map ./:./ Pages:Pages Shared:Shared --style compressed --load-path=Styles --update" ContinueOnError="true">
+    <Output TaskParameter="ExitCode" PropertyName="ErrorCodeSass" />
+    </Exec>
+    <Error Condition="'$(ErrorCodeSass)' != '0'" Text="Dart-sass is unhappy about something " />
+  </Target>
+  
+</Project>
+

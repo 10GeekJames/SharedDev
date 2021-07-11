@@ -1,0 +1,81 @@
+<#@ template hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.IO" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Configuration" #>
+<#@ assembly name="Microsoft.SqlServer.ConnectionInfo" #>
+<#@ assembly name="Microsoft.SqlServer.Smo" #>
+<#@ assembly name="System.Runtime" #>
+<#@ output extension="generated.txt" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#+ 
+    public void GenEnums() {
+        string tableName = Path.GetFileNameWithoutExtension(Host.TemplateFile);
+        tableName = tableName.Substring(4);
+        string path = Path.GetDirectoryName(Host.TemplateFile);
+        string columnId = "Id";
+        string columnName = "LookupText";
+        string columnDescription = "DisplayText";
+        
+        string connectionString = System.Environment.GetEnvironmentVariable("Calculator2ConnectionStringsPrimary");
+        var fileName = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\EnumsGenerated\\")), tableName + ".cs");
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))
+        {           
+        file.WriteLine("using System;");
+        file.WriteLine("using System.CodeDom.Compiler;");
+        file.WriteLine("namespace Calculator.Models.Enums {"); 
+        SqlConnection conn = new SqlConnection(connectionString);
+        conn.Open();      
+        string command = string.Format("select {0}, {1}, {2}, LookupCategoryId from {3} order by lookupCategoryId", columnId, columnName, columnDescription, tableName);
+        SqlCommand comm = new SqlCommand(command, conn);
+        SqlDataReader reader = comm.ExecuteReader();
+        string categoryId = "-1";
+        string categoryPrefix="";
+        bool loop = reader.Read();
+        var currentCategoryPrefix = "";
+        var isFirstWrite = true;
+        while(loop)
+        {
+            if(reader["lookupCategoryId"].ToString() != categoryId)
+            {
+                categoryId = reader["lookupCategoryId"].ToString();
+                SqlConnection conn2 = new SqlConnection(connectionString);
+                conn2.Open();
+                string command2 = string.Format("select top 1 LookupText from LookupCategories where id = {0}", categoryId);
+                SqlCommand comm2 = new SqlCommand(command2, conn2);
+                SqlDataReader reader2 = comm2.ExecuteReader();
+                var exists = reader2.Read();
+                if(exists){
+                    categoryPrefix = reader2["LookupText"].ToString();
+                }
+            }
+            if(categoryPrefix != currentCategoryPrefix)          
+            {
+                if (!isFirstWrite) {
+                    file.WriteLine("}" + Environment.NewLine);
+                }
+                file.WriteLine("    public enum " + categoryPrefix + "{ ");
+                currentCategoryPrefix = categoryPrefix;
+                isFirstWrite=false;
+            }
+
+            
+            file.Write("        " + Pascalize(reader[columnName]) + "="+  reader[columnId] ); 
+            loop = reader.Read();
+            file.WriteLine(loop ? ",\r\n" : string.Empty);
+        }
+        file.WriteLine("}}");
+        }
+    }
+#>

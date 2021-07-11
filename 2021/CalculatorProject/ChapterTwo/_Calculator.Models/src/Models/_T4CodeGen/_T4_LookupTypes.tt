@@ -1,0 +1,5 @@
+<#@ include file="_T4Includes/_T4_GenTools.ttinclude" #>
+<#@ include file="_T4Includes/_T4_GenEnums.ttinclude" #>
+<#    
+    GenEnums();
+#>

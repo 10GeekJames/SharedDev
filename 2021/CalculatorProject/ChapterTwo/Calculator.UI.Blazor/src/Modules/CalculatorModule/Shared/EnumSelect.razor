@@ -1,0 +1,20 @@
+@inherits InputBase<TEnum>
+@typeparam TEnum
+
+<select @bind="CurrentValue">
+    @foreach (TEnum item in Enum.GetValues(typeof(TEnum)))
+    {
+        <option value="@item">@item.ToString()</option>
+    }
+</select>
+
+@code
+{
+    protected Type EnumType => typeof(TEnum);
+    protected override bool TryParseValueFromString(string value, out TEnum result, out string validationError)
+    {
+        result = value.ToEnum<TEnum>();
+        validationError = null;
+        return true;
+    }
+}

@@ -1,0 +1,188 @@
+<#@ template hostspecific="true" language="C#" #>
+<#@ assembly Name="EnvDTE" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Runtime" #>
+<#@ output extension="generated.txt" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ include file="_T4Includes/_T4_GenTools.ttinclude" #>
+<#
+    this.DeleteOutputDirectories();
+    this.WriteMappingFile();
+    this.WriteDbContextFile();
+    this.WriteVMFiles();
+    this.WriteAnyMissingStubFiles();
+#>
+<#+ 
+    private void WriteDbContextFile() 
+    {
+        var files = Directory.GetFiles(this.Host.ResolvePath("..\\ModelsToGen"), "*.cs"); 
+        var fileList = new List<string>(); 
+        foreach (string file in files.Where(rs=>!IsOnIgnoreFileList(rs)))
+        { 
+            fileList.Add(Path.GetFileNameWithoutExtension(file));
+        }
+        var fileName = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\..\\..\\..\\_Calculator.Infrastructure\\src\\")), "CalculatorDbContext.cs");
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))
+        {   
+            file.WriteLine("// This file is now under code-gen control, do not touch, will be regenerated frequenly");
+            file.WriteLine("using System;");
+            file.WriteLine("using System.Linq;");
+            file.WriteLine("using System.Text.RegularExpressions;");
+            file.WriteLine("using Calculator.Models;");
+            file.WriteLine("using Microsoft.EntityFrameworkCore;");
+            file.WriteLine("namespace Calculator.Infrastructure {");
+            file.WriteLine("    public partial class CalculatorDbContext : DbContext {");
+
+            foreach (var fileItem in fileList) { 
+                file.WriteLine("        public virtual DbSet<" + fileItem + "> " + plurality(fileItem) + " { get; set; }");
+            }
+        
+            file.WriteLine("        public CalculatorDbContext (DbContextOptions options) : base (options) { }");
+            file.WriteLine("    }");
+            file.WriteLine("}");
+        }
+    }
+    private string plurality(string fileName) {
+        if (fileName.EndsWith("s"))
+            return fileName + "es";
+        if (fileName.EndsWith("y"))
+            return fileName.Substring(0, fileName.Length - 1) + "ies";
+        return fileName + "s";
+    }
+    private string deplurality(string fileName) {
+        if (fileName.EndsWith("ies"))
+            return fileName.Substring(0, fileName.Length - 3) + "y";
+        if (fileName.EndsWith("s"))
+            return fileName.Substring(0, fileName.Length - 1);    
+        return fileName;
+    }
+    private void DeleteOutputDirectories()
+    {
+        Array.ForEach(Directory.GetFiles(this.Host.ResolvePath("..\\ViewModelsPartialsGenerated\\")), delegate(string path) { File.Delete(path); });
+    }
+    private void WriteMappingFile() 
+    {
+        var files = Directory.GetFiles(this.Host.ResolvePath("..\\ModelsToGen"), "*.cs"); 
+        var fileList = new List<string>(); 
+        foreach (string file in files.Where(rs=>!IsOnNonActiveIgnoreFileList(rs)))
+        { 
+            fileList.Add(Path.GetFileNameWithoutExtension(file));
+        }
+        var fileName = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\")), "DomainToViewModelMappingProfileGen.cs");
+        using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))
+        {           
+            file.WriteLine("using AutoMapper;");
+            file.WriteLine("using Calculator.Models;");
+            file.WriteLine("using Calculator.Models.ViewModels;");
+            file.WriteLine("namespace Calculator.Models.Mappings");
+            file.WriteLine("{");
+            file.WriteLine("    public class DomainToViewModelMappingProfileGen : Profile");
+            file.WriteLine("    {");
+            file.WriteLine("        public override string ProfileName {");
+            file.WriteLine("        get { return \"DomainToViewModelMappingsGen\"; }");
+            file.WriteLine("        }");
+            file.WriteLine("        public DomainToViewModelMappingProfileGen ()");
+            file.WriteLine("        {");
+            foreach (var fileItem in fileList) { 
+            file.WriteLine("            CreateMap<" + fileItem + "," + fileItem + "VM>().ReverseMap();");
+           }
+        file.WriteLine("        }");
+        file.WriteLine("    }");
+        file.WriteLine("}");
+        }
+    }
+    private void WriteVMFiles()
+    {   
+        var properties = Directory.GetFiles(this.Host.ResolvePath("..\\ModelsToGen"), "*.cs"); 
+         // && !Path.GetFileName(rs).StartsWith("Active")
+        foreach (string file in properties.Where(rs=>!IsOnNonActiveIgnoreFileList(rs)))
+        { 
+            var contents = File.ReadAllText(file);
+            contents = Regex.Replace(contents, "(?<!\r)\n", "\r\n");
+            contents = contents
+
+                .Replace("public partial class " + Path.GetFileNameWithoutExtension(file) + " {", 
+                    "public partial class " + Path.GetFileNameWithoutExtension(file) + "VM {")
+                
+                .Replace("public partial class " + Path.GetFileNameWithoutExtension(file) + Environment.NewLine + "    {", 
+                    "public partial class " + Path.GetFileNameWithoutExtension(file) + "VM {")
+                
+                .Replace(Path.GetFileNameWithoutExtension(file) + " ", Path.GetFileNameWithoutExtension(file) + "VM ")
+                .Replace(Path.GetFileNameWithoutExtension(file) + Environment.NewLine + "    {", Path.GetFileNameWithoutExtension(file) + "VM " + Environment.NewLine + "    {")
+                .Replace(Path.GetFileNameWithoutExtension(file) + "(", Path.GetFileNameWithoutExtension(file) + "VM(")
+                .Replace(Path.GetFileNameWithoutExtension(file) + " (",Path.GetFileNameWithoutExtension(file) + "VM (")
+
+                .Replace("public class " + Path.GetFileNameWithoutExtension(file), 
+                    "public class " + 
+                    Path.GetFileNameWithoutExtension(file) + "VM")
+
+                .Replace("Models","Models.ViewModels")
+                ;
+
+            var names = this.GetClassNames();    
+            foreach(var className in names) 
+            {
+                contents = contents.Replace("<" + className + ">", "<" + className + "VM>");
+                contents = contents.Replace(" " + className + "s ", " " + className + "sVM ");
+                contents = contents.Replace(" " + className.Substring(0, className.Length-1) + "ies ", " " + className.Substring(0, className.Length-1) + "iesVM ");
+                contents = contents.Replace("" + className + " ", "" + className + "VM ");
+
+                contents = contents.Replace("<" + plurality(className) + ">", "<" + plurality(className) + "VM>");
+                contents = contents.Replace(" " + plurality(className) + "s ", " " + plurality(className) + "VM ");
+                contents = contents.Replace("" + plurality(className) + " ", "" + plurality(className) + "VM ");
+                
+            }
+            contents = "// This file is generated, don't touch" + Environment.NewLine 
+                + "using Calculator.Models;" + Environment.NewLine 
+                + "using Calculator.Models.RequestResponse;" + Environment.NewLine 
+                + contents;
+            File.WriteAllText(Path.Combine(Path.GetDirectoryName(file), "../ViewModelsPartialsGenerated", Path.GetFileNameWithoutExtension(file) + "VM.cs" ) , contents);
+        }
+    }
+    public List<string> GetClassNames()
+    {
+        var files = Directory.GetFiles(this.Host.ResolvePath("..\\ModelsToGen"), "*.cs"); 
+        var fileNames = new List<string>();
+        foreach (string file in files.Where(rs=>!IsOnNonActiveIgnoreFileList(rs)))
+        {
+            fileNames.Add(Path.GetFileNameWithoutExtension(file));
+        }
+    return fileNames;
+    }
+    private void WriteAnyMissingStubFiles() 
+    {
+        var stubHeader = "// remove this line to take ownership of this file" + Environment.NewLine;
+        var files = Directory.GetFiles(this.Host.ResolvePath("..\\ModelsToGen"), "*.cs"); 
+        foreach (string file in files.Where(rs=>!IsOnNonActiveIgnoreFileList(rs)))
+        { 
+            var fileExists = false;
+            var writeOverAnyway = false;
+            fileExists = File.Exists(this.Host.ResolvePath("..\\ViewModels\\") + Path.GetFileNameWithoutExtension(file) + "VM.cs");
+
+            if(fileExists) {
+                var firstLine = File.ReadLines(this.Host.ResolvePath("..\\ViewModels\\") + Path.GetFileNameWithoutExtension(file) + "VM.cs").First();
+                if(firstLine == stubHeader) {
+                    writeOverAnyway = true;
+                }
+            }
+
+            if(!fileExists || writeOverAnyway) {
+            var contents = stubHeader
+               + "namespace Calculator.Models.ViewModels {" + Environment.NewLine 
+               + "  public partial class " + Path.GetFileNameWithoutExtension(file) + "VM {" + Environment.NewLine
+               + "  }" + Environment.NewLine
+               + "}" + Environment.NewLine;
+                File.WriteAllText(Path.Combine(Path.GetDirectoryName(file), "..\\ViewModels", Path.GetFileNameWithoutExtension(file) + "VM.cs" ) , contents);
+            }                    
+        }               
+    }
+#>

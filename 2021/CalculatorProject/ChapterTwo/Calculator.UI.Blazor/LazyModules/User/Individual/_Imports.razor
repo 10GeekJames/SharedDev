@@ -1,0 +1,36 @@
+﻿
+@using System.Net.Http
+@using System.Net.Http.Json
+@* @using Microsoft.AspNetCore.Components.Authorization *@
+@using Microsoft.Extensions.Localization
+@* @using Microsoft.AspNetCore.Components.WebAssembly.Services *@
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@* @using Microsoft.AspNetCore.Components.WebAssembly.Http *@
+@using Microsoft.JSInterop
+
+@using IndividualUserModule
+@using IndividualUserModule.Shared
+@using IndividualUserModule.Services
+@using IndividualUserModule.Components
+
+
+@using Calculator.UI.Blazor
+@using Calculator.UI.Blazor.Shared
+
+
+@using Calculator.Models
+@using Calculator.Models.ViewModels
+@using Calculator.Models.Validators
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Calculator.UI.Blazor.SharedLanguageBase> LocalizeShared
+
+@using Telerik.Blazor
+@using Telerik.Blazor.Components
+
+@using Blazored.FluentValidation
+
+@layout ComponentMainLayout
+

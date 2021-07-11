@@ -1,0 +1,34 @@
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#+
+    public string Pascalize(object value)
+    {
+        Regex rx = new Regex(@"(?:[^a-zA-Z0-9]*)(?<first>[a-zA-Z0-9])(?<reminder>[a-zA-Z0-9]*)(?:[^a-zA-Z0-9]*)");
+        return rx.Replace(value.ToString(), m => m.Groups["first"].ToString() + m.Groups["reminder"].ToString());
+    }
+    public string Pascalize(object value, string categoryPrefix)
+    {
+        Regex rx = new Regex(@"(?:[^a-zA-Z0-9]*)(?<first>[a-zA-Z0-9])(?<reminder>[a-zA-Z0-9]*)(?:[^a-zA-Z0-9]*)");
+        return rx.Replace(categoryPrefix, m => m.Groups["first"].ToString() + m.Groups["reminder"].ToString() ) + "_" + rx.Replace( value.ToString(), m => m.Groups["first"].ToString() + m.Groups["reminder"].ToString());
+    }
+    public bool IsOnIgnoreFileList(string fileName)
+    {
+        var fileNameClean = Path.GetFileName(fileName);
+        var onList = fileNameClean.EndsWith("Gen.cs") || 
+                fileNameClean.EndsWith("Enum.cs") ||
+                fileNameClean.StartsWith("Base") ||
+                fileNameClean.StartsWith("Data") ||
+                fileNameClean.StartsWith("Active");
+        return 
+            onList;
+    }
+    public bool IsOnNonActiveIgnoreFileList(string fileName)
+    {
+        var fileNameClean = Path.GetFileName(fileName);
+        var onList = fileNameClean.EndsWith("Gen.cs") || 
+                fileNameClean.EndsWith("Enum.cs") ||
+                fileNameClean.StartsWith("Base") ||
+                fileNameClean.StartsWith("Data");
+        return 
+            onList;
+    }
+#>

@@ -1,0 +1,19 @@
+@namespace IndividualUserModule.Components
+
+@code {
+    public ICollection<Calculator2Character> personas =
+        new List<Calculator2Character> {
+            new Calculator2Character { Name = "Bob" },
+            new Calculator2Character { Name = "Frank" },
+            new Calculator2Character { Name = "Larry" }
+        };
+}
+
+@foreach (var persona in personas)
+{
+    <div class="persona-list-row">
+        <div>
+            <a href="/User/Individual/Personas/@persona.Name"> @persona.Name</a>
+        </div>
+    </div>
+}

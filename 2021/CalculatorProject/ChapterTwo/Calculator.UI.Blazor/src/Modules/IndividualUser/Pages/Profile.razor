@@ -1,0 +1,169 @@
+@namespace Calculator.UI.Blazor.Modules.IndividualUser.Pages
+@layout IndividualUserMainLayout
+@page "/User/Individual/Profile"
+
+@using Microsoft.AspNetCore.Components.Forms
+@using Calculator.UI.Blazor.Shared
+@using FluentValidation
+@using Calculator.Models.Validators
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Profile> Localize
+
+<h1>@Localize["Hello there, Individual Profile Here"]</h1>
+<a href="#">@Localize["Green I wonder?"]</a>
+@if (Calculator2Character != null)
+{
+    <div class="mt-4" style="margin: 0 auto;">
+        <TelerikForm EditContext="@EditContext">
+            <FormValidation>
+                <FluentValidationValidator Validator="@Validator"></FluentValidationValidator>
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Calculator2Character.Name">@Localize["Name"]:</label>
+                            <InputText id="name" type="text" class="form-control" @bind-Value=Calculator2Character.Name
+                            placeholder=@Localize["Name"]>
+                            </InputText>
+                            <ValidationMessage For="() => Calculator2Character.Name"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Calculator2Character.Avatar">@Localize["Avatar"]:</label>
+                            <InputText id="Avatar" type="text" class="form-control" @bind-Value=Calculator2Character.Avatar
+                            placeholder=@Localize["Avatar"]>
+                            </InputText>
+                            <ValidationMessage For="() => Calculator2Character.Avatar"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Calculator2Character.Bio">@Localize["Bio"]:</label>
+                            <InputText id="Bio" type="text" class="form-control" @bind-Value=Calculator2Character.Bio
+                            placeholder=@Localize["Short Bio"]>
+                            </InputText>
+                            <ValidationMessage For="() => Calculator2Character.Bio"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Calculator2Character.WhatISeek">@Localize["WhatISeek"]:</label>
+                            <InputText id="WhatISeek" type="text" class="form-control" @bind-Value=Calculator2Character.WhatISeek
+                            placeholder=@Localize["What you are Seeking"]>
+                            </InputText>
+                            <ValidationMessage For="() => Calculator2Character.WhatISeek"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Calculator2Character.WhyMe">@Localize["WhyMe"]:</label>
+                            <InputText id="WhyMe" type="text" class="form-control" @bind-Value=Calculator2Character.WhyMe
+                            placeholder=@Localize["Why you make a strong teammate"]>
+                            </InputText>
+                            <ValidationMessage For="() => Calculator2Character.WhyMe"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Calculator2Character.WhyYou">@Localize["WhyYou"]:</label>
+                            <InputText id="WhyYou" type="text" class="form-control" @bind-Value=Calculator2Character.WhyYou
+                            placeholder=@Localize["Why someone else would make a strong teammate"]>
+                            </InputText>
+                            <ValidationMessage For="() => Calculator2Character.WhyYou"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+
+                <FormItem>
+                    <Template>
+                        <label For="() => Calculator2Character.SkillRating">@Localize["SkillRating"]:</label>
+                        <TelerikSlider @bind-Value=Calculator2Character.SkillRating Min="0" Max="100" SmallStep="1" LargeStep="20"
+                        Width="400px">
+                        </TelerikSlider>
+                        <ValidationMessage For="() => Calculator2Character.SkillRating"></ValidationMessage>
+                    </Template>
+                </FormItem>
+
+                <FormItem>
+                    <Template>
+                        <label For="() => Calculator2Character.IntensityRating">@Localize["IntensityRating"]:</label>
+                        <TelerikSlider @bind-Value=Calculator2Character.IntensityRating Min="0" Max="100" SmallStep="1"
+                        LargeStep="20" Width="400px">
+                        </TelerikSlider>
+                        <ValidationMessage For="() => Calculator2Character.IntensityRating"></ValidationMessage>
+                    </Template>
+                </FormItem>
+
+                <FormItem>
+                    <Template>
+                        <label For="() => Calculator2Character.ExperienceRating">@Localize["ExperienceRating"]:</label>
+                        <TelerikSlider @bind-Value=Calculator2Character.ExperienceRating Min="0" Max="100" SmallStep="1"
+                        LargeStep="20" Width="400px">
+                        </TelerikSlider>
+                        <ValidationMessage For="() => Calculator2Character.ExperienceRating"></ValidationMessage>
+                    </Template>
+                </FormItem>
+
+                @*
+                    <TelerikSlider @bind-Value=Calculator2Character.IntensityRating Min="0" Max="100" SmallStep="1" LargeStep="20"
+                    Width="400px">
+                    </TelerikSlider>
+
+                    <TelerikSlider @bind-Value=Calculator2Character.ExperienceRating Min="0" Max="100" SmallStep="1" LargeStep="20"
+                    Width="400px">
+                    </TelerikSlider> *@
+
+
+            </FormItems>
+
+        </TelerikForm>
+    </div>
+    @* <EditForm Model=@Calculator2Character>
+        <InputText @bind-Value=Calculator2Character.Name />
+        <InputText @bind-Value=Calculator2Character.Avatar />
+        <InputText @bind-Value=Calculator2Character.Bio />
+        <InputText @bind-Value=Calculator2Character.WhatISeek />
+        <InputText @bind-Value=Calculator2Character.WhyMe />
+        <InputText @bind-Value=Calculator2Character.WhyYou />
+
+        <TelerikSlider @bind-Value=Calculator2Character.SkillRating Min="0" Max="100" SmallStep="1" LargeStep="20" Width="400px">
+        </TelerikSlider>
+
+        <TelerikSlider @bind-Value=Calculator2Character.IntensityRating Min="0" Max="100" SmallStep="1" LargeStep="20" Width="400px">
+        </TelerikSlider>
+
+        <TelerikSlider @bind-Value=Calculator2Character.ExperienceRating Min="0" Max="100" SmallStep="1" LargeStep="20" Width="400px">
+        </TelerikSlider>
+
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        </EditForm> *@
+}
+@code
+{
+    public EditContext EditContext { get; set; }
+    public Calculator2Character Calculator2Character { get; set; }
+    public Calculator.Models.Validators.Calculator2CharacterValidator Validator { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.Calculator2Character = new Calculator2Character();
+        this.Validator = new Calculator2CharacterValidator(Localize, LocalizeShared);
+        this.EditContext = new EditContext(Calculator2Character);
+        //var service = new IndividualHttpClientService();
+
+        //var bob = factory.GetIndividualAsync();
+    }
+}

@@ -1,0 +1,24 @@
+@namespace Calculator.UI.Blazor.Modules.IndividualUser.Shared
+@layout IndividualUserMainLayout
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<IndividualNav> Localize
+
+<div class="container">
+    <div class="row">
+        <NavLink class="nav-link" href="/user/individual" Match="NavLinkMatch.All">
+            <span class="oi oi-plus" aria-hidden="true"></span> @Localize["root"]
+        </NavLink>
+        <NavLink class="nav-link" href="/user/individual/private">
+            <span class="oi oi-plus" aria-hidden="true"></span> @Localize["private"]
+        </NavLink>
+        <NavLink class="nav-link" href="/user/individual/profile">
+            <span class="oi oi-plus" aria-hidden="true"></span> @Localize["profile"]
+        </NavLink>
+        <NavLink class="nav-link" href="/user/individual/personas">
+            <span class="oi oi-plus" aria-hidden="true"></span> @Localize["personas"]
+        </NavLink>
+        <NavLink class="nav-link" href="/user/individual/about">
+            <span class="oi oi-plus" aria-hidden="true"></span> @Localize["about"]
+        </NavLink>
+    </div>
+</div>

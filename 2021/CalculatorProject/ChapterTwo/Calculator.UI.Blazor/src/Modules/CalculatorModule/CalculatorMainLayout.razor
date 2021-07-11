@@ -1,0 +1,24 @@
+@namespace Calculator.UI.Blazor.Modules.CalculatorModule.Pages
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
+
+@inherits LayoutComponentBase
+@layout MainLayout
+@page "/Calculator"
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<IndividualUserMainLayout> Localize
+
+<CalcNav />
+<div>
+    @LocalizeShared["Greeting"]
+</div>
+<div class="full-height-body">
+    @Body
+</div>
+<hr />
+<CalcFoot />
+
+@code{
+    
+}

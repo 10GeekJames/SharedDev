@@ -1,0 +1,339 @@
+<#@ template hostspecific="true" language="C#" #>
+<#@ assembly Name="EnvDTE" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Runtime" #>
+<#@ output extension="generated.txt" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ include file="_T4Includes/_T4_GenTools.ttinclude" #>
+<#
+    this.DeleteApiGenControllers();
+    this.CreateApiGenControllers();
+#>
+<#+ 
+    private string plurality(string fileName) {
+        if (fileName.EndsWith("s"))
+            return fileName + "es";
+        if (fileName.EndsWith("y"))
+            return fileName.Substring(0, fileName.Length - 1) + "ies";
+        return fileName + "s";
+    }
+    private void DeleteApiGenControllers() 
+    {
+        var files = Directory.GetFiles(Path.GetDirectoryName(this.Host.ResolvePath("..\\..\\..\\..\\_Calculator.Api\\src\\Controllers\\gen\\"))); 
+        foreach (var f in files) {
+            File.Delete(f);
+        }
+    }
+    private void CreateApiGenControllers() {
+        
+        var files = Directory.GetFiles(this.Host.ResolvePath("../ModelsToGen"), "*.cs"); 
+        var fileList = new List<string>(); 
+
+        foreach (string file in files.Where(rs=>!IsOnIgnoreFileList(rs)))
+        { 
+            fileList.Add(Path.GetFileNameWithoutExtension(file));
+        }        
+        
+        foreach (var fileItem in fileList) { 
+            var genServicesFile = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\..\\..\\..\\_Calculator.Api\\src\\Controllers\\gen\\")), fileItem + "Controller.cs");
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(genServicesFile))
+            {   
+                file.WriteLine("// This file is now under code-gen control, do not touch, will be regenerated frequenly");
+
+                file.WriteLine("    using System;");
+                file.WriteLine("    using System.Linq;");
+                file.WriteLine("    using AutoMapper;");
+                file.WriteLine("    using Microsoft.AspNetCore.Authorization;");
+                file.WriteLine("    using Microsoft.AspNetCore.Mvc;");
+                file.WriteLine("    using Microsoft.EntityFrameworkCore;");
+                file.WriteLine("    using System.Threading.Tasks;");
+                file.WriteLine("    using System.Collections.Generic;");
+                file.WriteLine("    using Kendo.DynamicLinqCore;");
+                file.WriteLine("    using Calculator.Api.Services;");
+                file.WriteLine("    using System.IO;");
+                file.WriteLine("    using Calculator.Infrastructure;");
+                file.WriteLine("    using Calculator.Models;");
+                file.WriteLine("    using Calculator.Models.ViewModels;");
+                file.WriteLine("");
+                file.WriteLine("    namespace Api.Controllers.Generated");
+                file.WriteLine("    {");
+                file.WriteLine("        [Route(\"api/gen/[controller]\")]");
+                file.WriteLine("        [ApiController]");
+                file.WriteLine("        public class " + fileItem + "Controller : ControllerBase");
+                file.WriteLine("        {");
+                file.WriteLine("            private CalculatorDbContext _dbContext;");
+                file.WriteLine("            private IMapper _mapper;");
+                file.WriteLine("            public " + fileItem + "Controller(CalculatorDbContext dbContext, IMapper mapper)");
+                file.WriteLine("            {");
+                file.WriteLine("                this._dbContext = dbContext;");
+                file.WriteLine("                this._mapper = mapper;");
+                file.WriteLine("            }");
+                file.WriteLine("");
+
+                file.WriteLine("            [HttpGet, Authorize]");
+                file.WriteLine("            public async Task<IActionResult> Get(long id)");
+                file.WriteLine("            {");
+                file.WriteLine("                var uri = new Uri(Request.Headers[\"Referer\"]);");
+                file.WriteLine("                var callerUrl = $\"{uri.Scheme}://{uri.Host}\";");
+                file.WriteLine("                var response = new " + fileItem + "VM();");
+                file.WriteLine("");
+                file.WriteLine("                long businessId = 0;");
+                file.WriteLine("                var loggedInUserEmail = \"\";");
+                file.WriteLine("                var claimEmail = HttpContext.User.Claims.FirstOrDefault(rs => rs.Type == \"name\");");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    loggedInUserEmail = claimEmail.Value;");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("");
+                file.WriteLine("                Website site = await CalculatorControllerUtility.GetCurrentWebsite(callerUrl, _dbContext);");
+                file.WriteLine("                if (site == null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw new Exception(\"Site Business could not be located\");");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                businessId = site.BusinessId;");
+                file.WriteLine("");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    Individual individual = await CalculatorControllerUtility.GetLoggedInIndividual(businessId, loggedInUserEmail, _dbContext);");
+                file.WriteLine("");
+                file.WriteLine("                    if (individual == null)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Individual could not be located\");");
+                file.WriteLine("                    }");
+                file.WriteLine("");
+                file.WriteLine("                    var isOwner = CalculatorControllerUtility.IsSiteOwner(site, individual, _dbContext);");
+                file.WriteLine("                    if (!isOwner)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Not an owner/admin of this site.\");");
+                file.WriteLine("                    }");
+                file.WriteLine("                }");
+                file.WriteLine("                var " + fileItem + " = _dbContext." + plurality(fileItem) + ".Find(id);");
+                file.WriteLine("");
+                file.WriteLine("                response = _mapper.Map<" + fileItem + "VM>(" + fileItem + ");");
+                file.WriteLine("                return Ok(response);");
+                file.WriteLine("            }");
+                file.WriteLine("");
+
+                file.WriteLine("            [HttpPut, Authorize]");
+                file.WriteLine("            public async Task<IActionResult> Put(" + fileItem + "VM " + fileItem + "VM)");
+                file.WriteLine("            {");
+                file.WriteLine("                var uri = new Uri(Request.Headers[\"Referer\"]);");
+                file.WriteLine("                var callerUrl = $\"{uri.Scheme}://{uri.Host}\";");
+                file.WriteLine("                var response = new HashSet<" + fileItem + "VM>();");
+                file.WriteLine("");
+                file.WriteLine("                long businessId = 0;");
+                file.WriteLine("                var loggedInUserEmail = \"\";");
+                file.WriteLine("                var claimEmail = HttpContext.User.Claims.FirstOrDefault(rs => rs.Type == \"name\");");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    loggedInUserEmail = claimEmail.Value;");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("");
+                file.WriteLine("                Website site = await CalculatorControllerUtility.GetCurrentWebsite(callerUrl, _dbContext);");
+                file.WriteLine("                if (site == null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw new Exception(\"Site Business could not be located\");");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                businessId = site.BusinessId;");
+                file.WriteLine("");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    Individual individual = await CalculatorControllerUtility.GetLoggedInIndividual(businessId, loggedInUserEmail, _dbContext);");
+                file.WriteLine("");
+                file.WriteLine("                    if (individual == null)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Individual could not be located\");");
+                file.WriteLine("                    }");
+                file.WriteLine("");
+                file.WriteLine("                    var isOwner = CalculatorControllerUtility.IsSiteOwner(site, individual, _dbContext);");
+                file.WriteLine("                    if (!isOwner)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Not an owner/admin of this site.\");");
+                file.WriteLine("                    }");
+                file.WriteLine("                }");
+                file.WriteLine("                var " + fileItem + " = _dbContext." + plurality(fileItem));
+                file.WriteLine("                .Find(" + fileItem + "VM.Id);");
+                file.WriteLine("");
+                file.WriteLine("                if (" + fileItem + " == null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw new Exception(\"" + fileItem + " could not be located\");");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                _dbContext.Attach(" + fileItem + ").CurrentValues.SetValues(" + fileItem + "VM);");
+                file.WriteLine("");
+                file.WriteLine("                try");
+                file.WriteLine("                {");
+                file.WriteLine("                    _dbContext.SaveChanges();");
+                file.WriteLine("                    return Ok();");
+                file.WriteLine("                }");
+                file.WriteLine("                catch (System.Exception)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw;");
+                file.WriteLine("                }");
+                file.WriteLine("            }");
+
+                file.WriteLine("            [HttpPost, Authorize]");
+                file.WriteLine("            public async Task<IActionResult> Post(" + fileItem + "VM " + fileItem + "VM)");
+                file.WriteLine("            {");
+                file.WriteLine("                var uri = new Uri(Request.Headers[\"Referer\"]);");
+                file.WriteLine("                var callerUrl = $\"{uri.Scheme}://{uri.Host}\";");
+                file.WriteLine("                var response = new HashSet<" + fileItem + "VM>();");
+                file.WriteLine("");
+                file.WriteLine("                long businessId = 0;");
+                file.WriteLine("                var loggedInUserEmail = \"\";");
+                file.WriteLine("                var claimEmail = HttpContext.User.Claims.FirstOrDefault(rs => rs.Type == \"name\");");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    loggedInUserEmail = claimEmail.Value;");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("");
+                file.WriteLine("                Website site = await CalculatorControllerUtility.GetCurrentWebsite(callerUrl, _dbContext);");
+                file.WriteLine("                if (site == null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw new Exception(\"Site Business could not be located\");");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                businessId = site.BusinessId;");
+                file.WriteLine("");
+                file.WriteLine("                Individual individual = await CalculatorControllerUtility.GetLoggedInIndividual(businessId, loggedInUserEmail, _dbContext);");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("");
+                file.WriteLine("                    if (individual == null)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Individual could not be located\");");
+                file.WriteLine("                    }");
+                file.WriteLine("");
+                file.WriteLine("                    var isOwner = CalculatorControllerUtility.IsSiteOwner(site, individual, _dbContext);");
+                file.WriteLine("                    if (!isOwner)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Not an owner/admin of this site.\");");
+                file.WriteLine("                    }");
+                file.WriteLine("                }");
+                file.WriteLine("                var businessIdProperty = typeof(" + fileItem + "VM).GetProperty(\"BusinessId\");");
+                file.WriteLine("                if( businessIdProperty != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    businessIdProperty.SetValue(" + fileItem + "VM, businessId);");
+                file.WriteLine("                }");
+                file.WriteLine("                var individualIdProperty = typeof(" + fileItem + "VM).GetProperty(\"IndividualId\");");
+                file.WriteLine("                if( individualIdProperty != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    individualIdProperty.SetValue(" + fileItem + "VM, individual.Id);");
+                file.WriteLine("                }");
+                file.WriteLine("                var _" + fileItem + "= _mapper.Map<" + fileItem + ">(" + fileItem + "VM);");
+                file.WriteLine("                _dbContext." + plurality(fileItem) + ".Add(_" + fileItem + ");");
+                file.WriteLine("");
+                file.WriteLine("                try");
+                file.WriteLine("                {");
+                file.WriteLine("                    _dbContext.SaveChanges();");
+                file.WriteLine("                    return Ok( _mapper.Map<" + fileItem + "VM>(_" + fileItem + "));");
+                file.WriteLine("                }");
+                file.WriteLine("                catch (System.Exception)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw;");
+                file.WriteLine("                }");
+                file.WriteLine("            }");
+
+                file.WriteLine("            [HttpPost, Authorize, Route(\"search\")]");
+                file.WriteLine("            public async Task<DataSourceResult> Search(DataSourceRequestWithSearchParam request)");
+                file.WriteLine("            {");
+                file.WriteLine("                // JsonSerializerOptions jsonSerializerOptions = CustomJsonSerializerOptions.DefaultOptions;");
+                file.WriteLine("                var uri = new Uri(Request.Headers[\"Referer\"]);");
+                file.WriteLine("                var callerUrl = $\"{uri.Scheme}://{uri.Host}\";");
+                file.WriteLine("                var response = new HashSet<" + fileItem + "VM>();");
+                file.WriteLine("");
+                file.WriteLine("                long businessId = 0;");
+                file.WriteLine("                var loggedInUserEmail =\"\";");
+                file.WriteLine("                var claimEmail = HttpContext.User.Claims.FirstOrDefault(rs => rs.Type == \"name\");");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    loggedInUserEmail = claimEmail.Value;");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("");
+                file.WriteLine("                Website site = await CalculatorControllerUtility.GetCurrentWebsite(callerUrl, _dbContext);");
+                file.WriteLine("                if (site == null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    throw new Exception(\"Site Business could not be located\");");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                businessId = site.BusinessId;");
+                file.WriteLine("");
+                file.WriteLine("                if (claimEmail != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    Individual individual = await CalculatorControllerUtility.GetLoggedInIndividual(businessId, loggedInUserEmail, _dbContext);");
+                file.WriteLine("");
+                file.WriteLine("                    if (individual == null)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Individual could not be located\");");
+                file.WriteLine("                    }");
+                file.WriteLine("");
+                file.WriteLine("                    var isOwner = CalculatorControllerUtility.IsSiteOwner(site, individual, _dbContext);");
+                file.WriteLine("                    if (!isOwner)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        throw new Exception(\"Not an owner/admin of this site.\");");
+                file.WriteLine("                    }");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                var content = \"\";");
+                file.WriteLine("                using (var contentStream = this.Request.BodyReader.AsStream())");
+                file.WriteLine("                {");
+                file.WriteLine("                    using (var sr = new StreamReader(contentStream))");
+                file.WriteLine("                    {");
+                file.WriteLine("                        content = sr.ReadToEnd();");
+                file.WriteLine("                    }");
+                file.WriteLine("                }");
+                file.WriteLine("");
+                file.WriteLine("                // var request = JsonSerializer.Deserialize<DataSourceRequestWithSearchParam>(content, jsonSerializerOptions);");
+                file.WriteLine("                IQueryable<" + fileItem + "VM> " + fileItem + "s;");
+                file.WriteLine("                if (request.StringToSearchFor == null || request.StringToSearchFor.Length == 0)");
+                file.WriteLine("                {");
+                file.WriteLine("                    " + fileItem + "s = _dbContext." + plurality(fileItem));
+                file.WriteLine("//                    .Include(rs => rs.OrderState)");
+                file.WriteLine("                    .Take(int.MaxValue)");
+                file.WriteLine("                    .Select(rs => _mapper.Map<" + fileItem + "VM>(rs));");
+                file.WriteLine("                }");
+                file.WriteLine("                else");
+                file.WriteLine("                {");
+                file.WriteLine("                    " + fileItem + "s = _dbContext." + plurality(fileItem));
+                file.WriteLine("//                        .Include(rs => rs.OrderState)");
+                file.WriteLine("//                        .Where(rs => rs.Business.Name.Contains(request.StringToSearchFor) ||");
+                file.WriteLine("//                                    rs.ExternalNotes.Contains(request.StringToSearchFor) ||");
+                file.WriteLine("//                                    rs.CreditFileNumber.ToString().Contains(request.StringToSearchFor) ||");
+                file.WriteLine("//                                    rs.ReferenceNumber.ToString().Contains(request.StringToSearchFor) ||");
+                file.WriteLine("//                                    rs.CompanyName.Contains(request.StringToSearchFor) ||");
+                file.WriteLine("//                                    rs.RequestorEmailAddress.Contains(request.StringToSearchFor))");
+                file.WriteLine("                        .OrderBy(rs => rs.Id)");
+                file.WriteLine("                        .Select(rs => _mapper.Map<" + fileItem + "VM>(rs));");
+                file.WriteLine("                }");
+                file.WriteLine("                if (request.Filter != null)");
+                file.WriteLine("                {");
+                file.WriteLine("                    for (var x = 0; x < request.Filter.Filters.Count(); x++)");
+                file.WriteLine("                    {");
+                file.WriteLine("                        request.Filter.Filters.ElementAt(x).Field = request.Filter.Filters.ElementAt(x).Field[0].ToString().ToUpper() + request.Filter.Filters.ElementAt(x).Field.Substring(1);");
+                file.WriteLine("                    }");
+                file.WriteLine("                }");
+                file.WriteLine("                var rs = " + fileItem + "s.ToList().AsQueryable().ToDataSourceResult(request.Take, request.Skip, request.Sort, request.Filter, request.Aggregate, request.Group);");
+                file.WriteLine("                return rs;");
+                file.WriteLine("            }");
+
+                file.WriteLine("        }");
+                file.WriteLine("    }");
+            }
+        }
+    }
+#>

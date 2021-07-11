@@ -1,0 +1,22 @@
+@page "/counter"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization;
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Counter> Localize
+
+<h1>@Localize["Counter"]</h1>
+
+<p>@Localize["CurrentCount"] @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">
+    @Localize["ClickMe"]</button>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

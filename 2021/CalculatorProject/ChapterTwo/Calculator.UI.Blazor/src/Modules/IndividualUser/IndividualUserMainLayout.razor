@@ -1,0 +1,24 @@
+@namespace Calculator.UI.Blazor.Modules.IndividualUser.Pages
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
+
+@inherits LayoutComponentBase
+@layout MainLayout
+@page "/User/Individual"
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<IndividualUserMainLayout> Localize
+
+<IndividualNav />
+<div>
+    @Localize["Greeting"]
+</div>
+<div class="full-height-body">
+    @Body
+</div>
+<hr />
+<IndividualFoot />
+
+@code{
+    
+}

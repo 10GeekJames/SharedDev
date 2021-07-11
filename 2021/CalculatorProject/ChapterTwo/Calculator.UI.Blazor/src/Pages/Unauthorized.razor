@@ -1,0 +1,12 @@
+﻿@page "/ElevatedAccountRequired"
+@using Newtonsoft.Json;
+@inject IJSRuntime JSRuntime
+
+<AuthorizeView>
+    <Authorized>
+        <p>The resource your are trying to access requires an elevated account</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>The resource your are trying to access requires you login</p>
+    </NotAuthorized>
+</AuthorizeView>

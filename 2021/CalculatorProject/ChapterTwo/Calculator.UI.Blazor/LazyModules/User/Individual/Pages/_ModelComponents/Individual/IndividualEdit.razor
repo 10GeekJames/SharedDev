@@ -1,0 +1,82 @@
+@namespace IndividualUserModule.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Calculator.UI.Blazor.Shared
+@using FluentValidation
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Individual> Localize
+@* @inject IndividualHttpClient factory *@
+
+<h1>@Localize["Hello there, Individual Profile Here"]</h1>
+<a href="#">@Localize["Green I wonder?"]</a>
+@if (Individual != null)
+{
+    <div class="mt-4" style="margin: 0 auto;">
+        <TelerikForm EditContext="@EditContext">
+            <FormValidation>
+                <FluentValidationValidator Validator="@Validator"></FluentValidationValidator>
+            </FormValidation>
+            <FormItems>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Individual.EmailAddress">@Localize["EmailAddress"]:</label>
+                            <InputText id="EmailAddress" type="text" class="form-control"
+                            @bind-Value=Individual.EmailAddress placeholder=@Localize["EmailAddress"]>
+                            </InputText>
+                            <ValidationMessage For="() => Individual.EmailAddress"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Individual.FirstName">@Localize["FirstName"]:</label>
+                            <InputText id="name" type="text" class="form-control" @bind-Value=Individual.FirstName
+                            placeholder=@Localize["FirstName"]>
+                            </InputText>
+                            <ValidationMessage For="() => Individual.FirstName"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Individual.LastName">@Localize["Individual.LastName"]:</label>
+                            <InputText id="LastName" type="text" class="form-control" @bind-Value=Individual.LastName
+                            placeholder=@Localize["LastName"]>
+                            </InputText>
+                            <ValidationMessage For="() => Individual.LastName"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+                <FormItem>
+                    <Template>
+                        <div class="form-group">
+                            <label For="() => Individual.ImageUrl">@Localize["ImageUrl"]:</label>
+                            <InputText id="ImageUrl" type="text" class="form-control" @bind-Value=Individual.ImageUrl
+                            placeholder=@Localize["ImageUrl"]>
+                            </InputText>
+                            <ValidationMessage For="() => Individual.ImageUrl"></ValidationMessage>
+                        </div>
+                    </Template>
+                </FormItem>
+            </FormItems>
+        </TelerikForm>
+    </div>
+}
+@code
+{
+    public EditContext EditContext { get; set; }
+    public Individual Individual { get; set; }
+    public IndividualValidator Validator { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.Individual = new Individual();
+        this.Validator = new IndividualValidator(Localize, LocalizeShared);
+        this.EditContext = new EditContext(Individual);
+
+        //this.Individual = await Http.GetIndividualAsync();
+    }
+}

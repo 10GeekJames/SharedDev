@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Newtonsoft.Json
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+@inject Microsoft.Extensions.Localization.IStringLocalizer<LoginDisplay> Localize
+
+<AuthorizeView>
+    <Authorized>
+        @Localize["Hello"], <a name="loggedinUser" href="individual/account"> @context.User.Identity.Name!</a>
+        <button name="logout" class="nav-link btn btn-link" @onclick="BeginSignOut">@Localize["logout"]</button>
+    </Authorized>
+    <NotAuthorized>
+        <a name="login" href="authentication/login">@Localize["login"]</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+}

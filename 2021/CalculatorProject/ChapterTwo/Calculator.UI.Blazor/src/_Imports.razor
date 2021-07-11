@@ -1,0 +1,50 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.Extensions.Localization
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.WebAssembly.Services
+
+@* This critter can be used to inject the shared language translations to compliment the local components *@
+@inject Microsoft.Extensions.Localization.IStringLocalizer<Calculator.UI.Blazor.SharedLanguageBase> LocalizeShared
+
+@* Grab the shared models library *@
+@using Calculator.Models.Enums
+@using Calculator.Models.ViewModels
+
+@* Basic project assets *@
+@using Calculator.UI.Blazor
+@using Calculator.UI.Blazor.Shared
+@using Calculator.UI.Blazor.Services
+
+@* Bring in some Telerik goodness *@
+@using Telerik.Blazor
+@using Telerik.Blazor.Components
+
+@* Custom Validators *@
+@using Blazored.FluentValidation
+@using Calculator.Models
+@using Calculator.Models.Enums
+@using Calculator.Models.RequestResponse
+@using Calculator.Models.Validators
+
+@* Punt on lazy loading for now, circle back *@
+@* Load references to the modules for now *@
+@using Calculator.UI.Blazor.Modules.IndividualUser
+@using Calculator.UI.Blazor.Modules.IndividualUser.Components
+@using Calculator.UI.Blazor.Modules.IndividualUser.Pages
+@using Calculator.UI.Blazor.Modules.IndividualUser.Services
+@using Calculator.UI.Blazor.Modules.IndividualUser.Shared
+
+
+@using Calculator.UI.Blazor.Modules.CalculatorModule
+@using Calculator.UI.Blazor.Modules.CalculatorModule.Pages
+@using Calculator.UI.Blazor.Modules.CalculatorModule.Services
+@using Calculator.UI.Blazor.Modules.CalculatorModule.Shared
+
+

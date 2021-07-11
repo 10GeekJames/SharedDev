@@ -1,0 +1,60 @@
+<#@ template hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="System.IO" #>
+<#@ assembly name="System.Data" #>
+<#@ assembly name="System.Configuration" #>
+<#@ assembly name="Microsoft.SqlServer.ConnectionInfo" #>
+<#@ assembly name="Microsoft.SqlServer.Smo" #>
+<#@ assembly name="System.Runtime" #>
+<#@ output extension="generated.txt" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#@ import namespace="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#+ 
+  public void GenEnumsCat() {
+    string tableName = Path.GetFileNameWithoutExtension(Host.TemplateFile);
+    tableName = tableName.Substring(4);
+    string path = Path.GetDirectoryName(Host.TemplateFile);
+    string columnId = "Id";
+    string columnName = "LookupText";
+    string columnDescription = "DisplayText";
+    string connectionString = System.Environment.GetEnvironmentVariable("Calculator2ConnectionStringsPrimary");
+      
+    var fileName = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\EnumsGenerated\\")), tableName + ".cs");
+    using (System.IO.StreamWriter file = new System.IO.StreamWriter(fileName))
+    {           
+      file.WriteLine("using System;");
+      file.WriteLine("using System.CodeDom.Compiler;");
+
+      file.WriteLine("namespace Calculator.Models.Enums {"); 
+      file.WriteLine("    public enum " + tableName + "{ ");
+
+      SqlConnection conn = new SqlConnection(connectionString);
+      string command = string.Format("select {0}, {1}, {2} from {3} order by {0}", columnId, columnName, columnDescription, tableName);
+      SqlCommand comm = new SqlCommand(command, conn);
+  
+      conn.Open();
+      
+      SqlDataReader reader = comm.ExecuteReader();
+      bool loop = reader.Read();
+
+      while(loop)
+      {
+        file.Write("      " + Pascalize(reader[columnName]) + "="+  reader[columnId]); 
+        
+        loop = reader.Read();
+        file.WriteLine(loop ? ",\r\n" : string.Empty);
+      }
+      file.WriteLine("}}");
+    }
+  }
+#>

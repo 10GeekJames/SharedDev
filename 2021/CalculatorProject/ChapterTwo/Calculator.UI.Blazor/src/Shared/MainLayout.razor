@@ -1,0 +1,23 @@
+@inherits LayoutComponentBase
+
+@inject Microsoft.Extensions.Localization.IStringLocalizer<MainLayout> Localize
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4 auth">
+            <LanguageSelector />
+            <LoginDisplay />
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank"> @Localize["About"]</a>
+        </div>
+
+        <div class="content px-4 content-row">
+            <TelerikRootComponent>
+                @Body
+            </TelerikRootComponent>
+        </div>
+    </div>
+</div>

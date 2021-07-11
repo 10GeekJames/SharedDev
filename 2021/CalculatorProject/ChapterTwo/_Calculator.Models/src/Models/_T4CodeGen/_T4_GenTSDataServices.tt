@@ -1,0 +1,72 @@
+<#@ template hostspecific="true" language="C#" #>
+<#@ assembly Name="EnvDTE" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Runtime" #>
+<#@ output extension="generated.txt" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
+<#
+    this.DeleteTSDataServicesGenFile();
+    this.CreateTSDataServicesGenFile();
+#>
+<#+ 
+    private void DeleteTSDataServicesGenFile() 
+    {
+        var files = Directory.GetFiles(Path.GetDirectoryName(this.Host.ResolvePath("..\\..\\..\\..\\Calculator.UI.Angular\\src\\ClientApp\\src\\app\\services\\gen\\"))); 
+        foreach (var f in files) {
+            File.Delete(f);
+        }
+    }
+    private void CreateTSDataServicesGenFile() {
+        
+        var files = Directory.GetFiles(this.Host.ResolvePath("../ModelsToGen"), "*.cs"); 
+        var fileList = new List<string>(); 
+
+        foreach (string file in files.Where(rs=>!rs.EndsWith("Gen.cs") && !rs.EndsWith("Enum.cs") && !Path.GetFileName(rs).StartsWith("Base") && !Path.GetFileName(rs).StartsWith("Active")))
+        { 
+            fileList.Add(Path.GetFileNameWithoutExtension(file));
+        }        
+        
+        foreach (var fileItem in fileList) { 
+            var genServicesFile = Path.Combine(Path.GetDirectoryName(this.Host.ResolvePath("..\\..\\..\\..\\Calculator.UI.Angular\\src\\ClientApp\\src\\app\\services\\gen\\")), "data" + fileItem + ".gen.service.ts");
+
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(genServicesFile))
+            {   
+                file.WriteLine("// This file is now under code-gen control, do not touch, will be regenerated frequenly");
+                file.WriteLine("import { " + fileItem + "VM } from '@app/models/ServerGen';");
+                file.WriteLine("import { DataGenService } from '@app/services/data.gen.service';");
+                file.WriteLine("import { Injectable } from '@angular/core';");
+                file.WriteLine("import { Observable, BehaviorSubject } from 'rxjs';");
+                file.WriteLine("");
+                file.WriteLine("@Injectable({providedIn: 'root'})");
+                file.WriteLine("export class Data" + fileItem + "Service {");
+                file.WriteLine("");
+                file.WriteLine("  constructor(private dataService: DataGenService) { }");
+                file.WriteLine("");
+                file.WriteLine("  public get(id: number): Observable<" + fileItem + "VM> {");
+                file.WriteLine("    return this.dataService.get<" + fileItem + "VM>('" + fileItem + "', { id });");
+                file.WriteLine("  }");
+                file.WriteLine("");
+                file.WriteLine("  public post(" + fileItem + "VM: " + fileItem + "VM, params?: any): Observable<" + fileItem + "VM> {");
+                file.WriteLine("    return this.dataService.post<" + fileItem + "VM>('" + fileItem + "', " + fileItem + "VM, params);");
+                file.WriteLine("  }");
+                file.WriteLine("");
+                file.WriteLine("  public search(stateWithSearchParam?: any): Observable<" + fileItem + "VM> {");
+                file.WriteLine("      return this.dataService.search<" + fileItem + "VM>('" + fileItem + "', stateWithSearchParam);");
+                file.WriteLine("  }");
+                file.WriteLine("");
+                file.WriteLine("  public update(" + fileItem + "VM: " + fileItem + "VM, params?: any): Observable<" + fileItem + "VM> {");
+                file.WriteLine("    return this.dataService.put<" + fileItem + "VM>('" + fileItem + "', " + fileItem + "VM, params);");
+                file.WriteLine("  }");
+                file.WriteLine("}");
+            }
+        }
+    }
+#>

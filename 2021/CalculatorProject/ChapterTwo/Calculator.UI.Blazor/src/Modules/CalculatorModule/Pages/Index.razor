@@ -1,0 +1,48 @@
+@namespace Calculator.UI.Blazor.Modules.CalculatorModule.Pages
+@layout CalculatorMainLayout
+@page "/Calculator/Index"
+
+@inject CalculatorHttpClientService _httpService
+
+<h1>Hello there, welcome to the Blazor Online Calculator</h1>
+<a href="#">Pink I wonder?</a>
+<div>
+    <EditForm Model=@CurrentValues OnValidSubmitted=@Calculate()>
+        <div>
+            <EnumSelect TEnum="@CalculatorDoActionBehavior" @bind-Value="CurrentValues.Behavior" />
+        </div>
+        <div>
+            <input @bind-value="CurrentValues.Value1" />
+        </div>
+        <div>
+            <input @bind-value="CurrentValues.Value2" />
+        </div>
+        <div>
+            <input type="submit" class="btn btn-primary" value="Calculate" />
+        </div>
+        <div class="well">
+            <span>Answer: @Answer</span>
+        </div>
+
+    </EditForm>
+</div>
+
+@code {
+    public CalculatorDoActionBehavior CurrentCalculatorAction = CalculatorDoActionBehavior.Add;
+    public CalculatorDoActionBehaviorRequest CurrentValues = new CalculatorDoActionBehaviorRequest();
+    public string Answer = "Let's calculate something together";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+    protected async Task<bool> Calculate()
+    {
+        if (this.CurrentValues.IsReady())
+        {
+            this.Answer = await _httpService.DoAction(this.CurrentValues);
+            return true;
+        }
+        return false;
+    }
+}

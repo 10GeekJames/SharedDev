@@ -1,0 +1,20 @@
+@namespace Calculator.UI.Blazor.Modules.IndividualUser.Components
+@layout IndividualUserMainLayout
+@code {
+    public ICollection<Calculator2Character> personas =
+        new List<Calculator2Character> {
+            new Calculator2Character { Name = "Bob" },
+            new Calculator2Character { Name = "Frank" },
+            new Calculator2Character { Name = "Larry" }
+        };
+}
+<div><small>Persona List Component:</small></div>
+
+@foreach (var persona in personas)
+{
+    <div class="persona-list-row">
+        <div>
+            <a href="/User/Individual/Personas/@persona.Name"> @persona.Name (color-orangered?)</a>
+        </div>
+    </div>
+}

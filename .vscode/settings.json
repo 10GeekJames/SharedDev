@@ -1,0 +1,6 @@
+{
+    "files.exclude": {
+        "**/*.resx": true,
+        "**/*.g.cs": true
+    }
+}

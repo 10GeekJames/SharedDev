@@ -8,7 +8,7 @@
             "terminals": [
                 {
                     "name": "-test builder etc",
-                    "path": ".\\2021\\CalculatorProject\\ChapterOne\\src\\CalculatorProject.Test\\src",
+                    "path": ".\\2021\\CalculatorProject\\ChapterOne\\src\\CalculatorProject.UnitTest\\src",
                     "cmd": "dotnet watch build",
                     "num": 0
                 },

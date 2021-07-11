@@ -1,3 +1,9 @@
+Misc Videos as we go
+
+https://www.youtube.com/watch?v=xR9SX1Xp--E
+Chapter Two - The Journey of a one tiny-robot that only wants to help the world add numbers together.  
+Join as we go from knowing nothing, to watching the story un-fold, to participating, to getting-it and perhaps entering the professional industry as a highly favored, and enjoyed, software development team-member.
+
 ```
 VS Code
 https://code.visualstudio.com/download#

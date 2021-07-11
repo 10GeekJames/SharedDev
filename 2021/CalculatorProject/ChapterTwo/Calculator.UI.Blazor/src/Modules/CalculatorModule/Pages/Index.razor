@@ -7,21 +7,22 @@
 <h1>Hello there, welcome to the Blazor Online Calculator</h1>
 <a href="#">Pink I wonder?</a>
 <div>
-    <EditForm Model=@CurrentValues OnValidSubmitted=@Calculate()>
+    <EditForm id="calculator-form" Model="@CurrentValues" OnValidSubmit="@Calculate">
         <div>
-            <EnumSelect TEnum="@CalculatorDoActionBehavior" @bind-Value="CurrentValues.Behavior" />
+            <EnumSelect id="behavior" TEnum="@CalculatorDoActionBehavior" @bind-Value="CurrentValues.Behavior" />
         </div>
         <div>
-            <input @bind-value="CurrentValues.Value1" />
+            <input id="value1" @bind-value="CurrentValues.Value1" />
         </div>
         <div>
-            <input @bind-value="CurrentValues.Value2" />
+            <input id="value2" @bind-value="CurrentValues.Value2" />
         </div>
         <div>
-            <input type="submit" class="btn btn-primary" value="Calculate" />
+            <button id="submit-button" type="submit" class="btn btn-primary"
+                value="Calculate">Calculate</button>
         </div>
         <div class="well">
-            <span>Answer: @Answer</span>
+            <span>Answer: <span id="answer">@Answer</span></span>
         </div>
 
     </EditForm>
@@ -38,11 +39,7 @@
     }
     protected async Task<bool> Calculate()
     {
-        if (this.CurrentValues.IsReady())
-        {
-            this.Answer = await _httpService.DoAction(this.CurrentValues);
-            return true;
-        }
-        return false;
+        this.Answer = await _httpService.DoAction(CurrentValues);
+        return true;
     }
 }

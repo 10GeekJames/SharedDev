@@ -7,6 +7,8 @@ using CalculatorProject.UnitTest.Factories.WebDrivers;
 using CalculatorProject.UnitTest.Factories.Environments;
 using CalculatorProject.UnitTest.Wrappers;
 
+using Calculator.Service;
+using Calculator.Service.Interfaces;
 namespace CalculatorProject.UnitTest.Hooks
 {
     [Binding]
@@ -31,9 +33,10 @@ namespace CalculatorProject.UnitTest.Hooks
             _webDriverFactory = (IWebDriverFactory)new WebDriverFactory();
             _environmentUrlFactory = (IEnvironmentUrlFactory)new EnvironmentUrlFactory();
             
-            this._objectContainer.RegisterInstanceAs<CalculatorAppWrapper>(new CalculatorAppWrapper());
+            this._objectContainer.RegisterInstanceAs<ICalculatorService>(new CalculatorService(new StandardCalculatorService()));
+            
             this._objectContainer.RegisterInstanceAs<IWebDriverFactory>(this._webDriverFactory);
-            this._objectContainer.RegisterInstanceAs<IEnvironmentUrlFactory>(this._environmentUrlFactory);            
+            this._objectContainer.RegisterInstanceAs<IEnvironmentUrlFactory>(this._environmentUrlFactory);      
         }
 
         [AfterScenario]

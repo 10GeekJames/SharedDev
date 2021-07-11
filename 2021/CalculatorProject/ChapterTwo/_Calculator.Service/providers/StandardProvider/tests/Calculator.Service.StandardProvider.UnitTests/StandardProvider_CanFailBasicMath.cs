@@ -33,6 +33,15 @@ namespace Calculator.Service.StandardProvider.UnitTests
             mathOperation.Should().Throw<OverflowException>();
         }
 
+        [Theory]
+        [InlineData("0", "0", 0)]
+        public void CalculatorCanFailDivideByZero(string val1, string val2, int result)
+        {
+            Action mathOperation = () => this._calculatorService.DivAsIntegers(val1, val2);
+            mathOperation.Should().Throw<DivideByZeroException>();
+        }
+
+
 
         [Theory]
         [InlineData("Bob", "Nancy", "Bob Nancy")]

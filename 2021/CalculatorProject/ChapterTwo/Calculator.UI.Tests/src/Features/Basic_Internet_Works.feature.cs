@@ -31,7 +31,7 @@ namespace CalculatorProject.UnitTest.Features
 #line 1 "Basic_Internet_Works.feature"
 #line hidden
         
-        public BasicInternetWorksFeature(BasicInternetWorksFeature.FixtureData fixtureData, CalculatorProject_Test_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public BasicInternetWorksFeature(BasicInternetWorksFeature.FixtureData fixtureData, CalculatorProject_UnitTest_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();

@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../CalculatorProject/src/CalculatorProject.csproj" />
+    <ProjectReference Include="./../../_Calculator.Service/src/Calculator.Service.csproj" />
+    <ProjectReference Include="./../../_Calculator.Service/interfaces/Calculator.Service.Interfaces.csproj" />
+    <ProjectReference Include="./../../_Calculator.Service/providers/StandardProvider/src/Calculator.Service.StandardProvider.csproj" />
   </ItemGroup>
 
   <ItemGroup>

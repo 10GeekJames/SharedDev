@@ -19,7 +19,7 @@ namespace CalculatorProject.UnitTest.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class BasicCalculatorWorksFeature : object, Xunit.IClassFixture<BasicCalculatorWorksFeature.FixtureData>, System.IDisposable
+    public partial class BasicBlazorCalculatorWorksFeature : object, Xunit.IClassFixture<BasicBlazorCalculatorWorksFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -28,10 +28,10 @@ namespace CalculatorProject.UnitTest.Features
         
         private Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "Basic_Calculator.feature"
+#line 1 "Basic_Calculator_Blazor.feature"
 #line hidden
         
-        public BasicCalculatorWorksFeature(BasicCalculatorWorksFeature.FixtureData fixtureData, CalculatorProject_UnitTest_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public BasicBlazorCalculatorWorksFeature(BasicBlazorCalculatorWorksFeature.FixtureData fixtureData, CalculatorProject_UnitTest_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -40,7 +40,7 @@ namespace CalculatorProject.UnitTest.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Basic Calculator Works", "    As a User\r\n    I want the basic ability\r\n    to use the Calculator", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Basic Blazor Calculator Works", "    As a User\r\n    I want the basic ability\r\n    to use the Calculator", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -80,32 +80,35 @@ namespace CalculatorProject.UnitTest.Features
             this.TestTearDown();
         }
         
-        [Xunit.SkippableTheoryAttribute(DisplayName="I can add two numbers")]
-        [Xunit.TraitAttribute("FeatureTitle", "Basic Calculator Works")]
-        [Xunit.TraitAttribute("Description", "I can add two numbers")]
+        [Xunit.SkippableTheoryAttribute(DisplayName="I can blazor add two numbers")]
+        [Xunit.TraitAttribute("FeatureTitle", "Basic Blazor Calculator Works")]
+        [Xunit.TraitAttribute("Description", "I can blazor add two numbers")]
         [Xunit.TraitAttribute("Category", "Calc")]
         [Xunit.TraitAttribute("Category", "Calculator")]
-        [Xunit.InlineDataAttribute("1", "1", "2", new string[0])]
-        [Xunit.InlineDataAttribute("1", "2", "3", new string[0])]
-        [Xunit.InlineDataAttribute("3", "2", "5", new string[0])]
-        [Xunit.InlineDataAttribute("5", "3", "8", new string[0])]
-        [Xunit.InlineDataAttribute("8", "5", "13", new string[0])]
-        public virtual void ICanAddTwoNumbers(string number_One, string number_Two, string answer, string[] exampleTags)
+        [Xunit.TraitAttribute("Category", "Blazor")]
+        [Xunit.InlineDataAttribute("Add", "1", "1", "2", new string[0])]
+        [Xunit.InlineDataAttribute("Subtract", "1", "2", "-1", new string[0])]
+        [Xunit.InlineDataAttribute("Multiply", "3", "2", "6", new string[0])]
+        [Xunit.InlineDataAttribute("Divide", "6", "3", "2", new string[0])]
+        [Xunit.InlineDataAttribute("Add", "8", "5", "13", new string[0])]
+        public virtual void ICanBlazorAddTwoNumbers(string behavior, string number_One, string number_Two, string answer, string[] exampleTags)
         {
             string[] @__tags = new string[] {
                     "Calc",
-                    "Calculator"};
+                    "Calculator",
+                    "Blazor"};
             if ((exampleTags != null))
             {
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("behavior", behavior);
             argumentsOfScenario.Add("number_one", number_One);
             argumentsOfScenario.Add("number_two", number_Two);
             argumentsOfScenario.Add("answer", answer);
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("I can add two numbers", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 9
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("I can blazor add two numbers", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
+#line 10
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -125,14 +128,14 @@ namespace CalculatorProject.UnitTest.Features
             else
             {
                 this.ScenarioStart();
-#line 10
-        testRunner.Given("I have a calculator", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
 #line 11
-        testRunner.When(string.Format("I add {0} plus {1}", number_One, number_Two), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+        testRunner.Given("I am on the blazor calculator page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 12
-        testRunner.Then(string.Format("I get {0}", answer), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.When(string.Format("I submit the calculator form using {0}, {1}, {2}", behavior, number_One, number_Two), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 13
+        testRunner.Then(string.Format("I see {0}", answer), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -145,12 +148,12 @@ namespace CalculatorProject.UnitTest.Features
             
             public FixtureData()
             {
-                BasicCalculatorWorksFeature.FeatureSetup();
+                BasicBlazorCalculatorWorksFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                BasicCalculatorWorksFeature.FeatureTearDown();
+                BasicBlazorCalculatorWorksFeature.FeatureTearDown();
             }
         }
     }

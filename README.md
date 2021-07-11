@@ -9,7 +9,7 @@ A collection of workspaces to see if the kids can gain some interest and learn s
 Just getting Calculator Add up and working across all the places we want
 
 * CalculatorProject (.dll)
-* CalculatorProject.Test (.dll)
+* CalculatorProject.UnitTest (.dll)
 
 ### Chapter Two - Adding in a Console to talk to the app in a fun way
 

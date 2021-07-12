@@ -75,27 +75,17 @@ A collection of workspaces to see if the kids can gain some interest and learn s
 * CalculatorProject (.dll)
 * CalculatorProject.UnitTest (.dll)
 
-### Chapter Two - Adding in a Console to talk to the app in a fun way
+### Chapter Two - Unpacking a bit of noisey plumbing
 
-- [ ] Just getting Calculator Add up and working across all the places we want
+- [x] Refactored out the Calculator Service
+- [x] Created two Calculator Service Providers
+- [x] Added several xUnit Unit Tests to see the calculator working
+- [x] Created a Console app and injected the standard calculator service provider to interact with the calculator
+- [x] Created a Blazor app and injected the standard calculator service provider to create an on-screen experience for the calculator
+- [x] Created a few BDD Gherkin SpecFlow Selenium automated UI tests to stimulate the Blazor Calculator
+- [x] Chisled out a bit more project architecture, thinking outloud
+- [x] Cut a video; https://www.youtube.com/watch?v=xR9SX1Xp--E
 
 * CalculatorProject.Console (.exe)
 
-### Chapter Three - Introducing Data and Logging
-
-- [ ] Just getting Calculator Add up and working across all the places we want
-
-* CalculatorProject.Data (.dll)
-
-### Chapter Four - Crafting a Web-based a UI
-
-- [ ] Just getting Calculator Add up and working across all the places we want
-
-* CalculatorProject.Blazor.UI (Net5 SPA)
-
-
-### Chapter Five - Adding in Logins/Security
-
-- [ ] Just getting Calculator Add up and working across all the places we want
-
-* CalculatorProject.Identity (Login/Auth)
+### Chapter Three - ?
